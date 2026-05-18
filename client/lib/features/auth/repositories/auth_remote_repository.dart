@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:client/core/constants/server_constants.dart';
 import 'package:client/core/failure/failure.dart';
 import 'package:fpdart/fpdart.dart';
@@ -50,7 +49,11 @@ class AuthRemoteRepository {
       if (response.statusCode != 200) {
         return Left(AppFailure(resBodyMap['detail']));
       }
-      return Right(UserModel.fromMap(resBodyMap));
+      return Right(
+        UserModel.fromMap(
+          resBodyMap['user'],
+        ).copyWith(token: resBodyMap['token']),
+      );
     } catch (e) {
       return Left(AppFailure(e.toString()));
     }
