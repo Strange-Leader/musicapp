@@ -4,8 +4,9 @@ import 'package:client/core/widgets/loader.dart';
 import 'package:client/features/auth/repositories/auth_remote_repository.dart';
 import 'package:client/features/auth/view/pages/signup_page.dart';
 import 'package:client/features/auth/view/widgets/auth_gradient_button.dart';
-import 'package:client/features/auth/view/widgets/custom_field.dart';
+import 'package:client/core/widgets/custom_field.dart';
 import 'package:client/features/auth/viewmodel/auth_viewmodel.dart';
+import 'package:client/home/view/pages/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fpdart/fpdart.dart' hide State;
@@ -31,16 +32,19 @@ class _LoginPageState extends ConsumerState<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    final isLoading = ref.watch(authViewModelProvider)?.isLoading == true;
+    final isLoading = ref.watch(
+      authViewModelProvider.select((val) => val?.isLoading == true),
+    );
     ref.listen(authViewModelProvider, (_, next) {
       next?.when(
         data: (data) {
           //TODO make Hode page
 
-          // Navigator.push(
-          //   context,
-          //   MaterialPageRoute(builder: (context) => LoginPage()),
-          // );
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => HomePage()),
+            (_) => false,
+          );
         },
 
         error: (error, st) {
@@ -81,12 +85,16 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                     AuthGradientButton(
                       buttonText: 'Sign In',
                       onTap: () async {
-                        await ref
-                            .read(authViewModelProvider.notifier)
-                            .loginUser(
-                              email: emailController.text,
-                              password: passwordController.text,
-                            );
+                        if (formKey.currentState!.validate()) {
+                          await ref
+                              .read(authViewModelProvider.notifier)
+                              .loginUser(
+                                email: emailController.text,
+                                password: passwordController.text,
+                              );
+                        } else {
+                          showSnackBar(context, "Missing Field");
+                        }
                       },
                     ),
                     const SizedBox(height: 20),
