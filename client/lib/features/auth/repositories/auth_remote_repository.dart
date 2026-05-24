@@ -3,7 +3,7 @@ import 'package:client/core/constants/server_constants.dart';
 import 'package:client/core/failure/failure.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:http/http.dart' as http;
-import 'package:client/features/auth/model/user_model.dart';
+import 'package:client/core/models/user_model.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'auth_remote_repository.g.dart';
 
